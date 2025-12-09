@@ -16,7 +16,11 @@ const createUserDID = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'User already has a DID',
-        data: { did: user.did, verkey: user.verkey }
+        data: { 
+          did: user.did, 
+          verkey: user.verkey,
+          walletId: user.walletId 
+        }
       });
     }
 
@@ -26,13 +30,17 @@ const createUserDID = async (req, res) => {
     // Write to ledger
     await writeNymToLedger(did, verkey, user.role);
 
-    // Create wallet
-    await createWallet(userId, did);
+    // Create wallet - THIS IS THE FIX
+    const walletData = await createWallet(userId, did);
 
-    // Update user
+    // Update user with DID and verkey
     user.did = did;
     user.verkey = verkey;
+    // walletId is already set by createWallet function
     await user.save();
+
+    // Refresh user data to get walletId
+    const updatedUser = await User.findById(userId);
 
     // Log activity
     await logActivity({
@@ -40,16 +48,16 @@ const createUserDID = async (req, res) => {
       userDID: did,
       activityType: 'did_created',
       status: 'success',
-      metadata: { verkey }
+      metadata: { verkey, walletId: updatedUser.walletId }
     });
 
     res.status(201).json({
       success: true,
       message: 'DID created successfully',
       data: {
-        did,
-        verkey,
-        walletId: user.walletId
+        did: updatedUser.did,
+        verkey: updatedUser.verkey,
+        walletId: updatedUser.walletId  // Now included
       }
     });
   } catch (error) {

@@ -1,7 +1,8 @@
 // Hyperledger Indy Configuration
 // This file handles Indy SDK initialization
+// Currently running in SIMULATION mode - no real Indy SDK needed
 
-const indy = require('indy-sdk');
+// const indy = require('indy-sdk'); // Not needed in simulation mode
 
 const indyConfig = {
   poolName: process.env.INDY_POOL_NAME || 'sandbox',
@@ -13,44 +14,16 @@ const indyConfig = {
 let poolHandle = null;
 let walletHandle = null;
 
-// Initialize Indy Pool
+// Initialize Indy Pool (Simulation - returns null)
 const initializePool = async () => {
-  try {
-    const poolConfig = {
-      genesis_txn: indyConfig.genesisTxnPath
-    };
-
-    await indy.createPoolLedgerConfig(indyConfig.poolName, poolConfig);
-    poolHandle = await indy.openPoolLedger(indyConfig.poolName);
-    console.log('✅ Indy Pool initialized');
-    return poolHandle;
-  } catch (error) {
-    if (error.message.includes('PoolLedgerConfigAlreadyExistsError')) {
-      poolHandle = await indy.openPoolLedger(indyConfig.poolName);
-      console.log('✅ Indy Pool opened (already exists)');
-      return poolHandle;
-    }
-    console.error('❌ Indy Pool initialization failed:', error.message);
-    throw error;
-  }
+  console.log('⚠️ Running in SIMULATION mode - no real Indy pool initialization');
+  return null;
 };
 
-// Initialize Wallet
+// Initialize Wallet (Simulation - returns null)
 const initializeWallet = async () => {
-  try {
-    await indy.createWallet(indyConfig.walletConfig, indyConfig.walletCredentials);
-    walletHandle = await indy.openWallet(indyConfig.walletConfig, indyConfig.walletCredentials);
-    console.log('✅ Indy Wallet initialized');
-    return walletHandle;
-  } catch (error) {
-    if (error.message.includes('WalletAlreadyExistsError')) {
-      walletHandle = await indy.openWallet(indyConfig.walletConfig, indyConfig.walletCredentials);
-      console.log('✅ Indy Wallet opened (already exists)');
-      return walletHandle;
-    }
-    console.error('❌ Indy Wallet initialization failed:', error.message);
-    throw error;
-  }
+  console.log('⚠️ Running in SIMULATION mode - no real Indy wallet initialization');
+  return null;
 };
 
 module.exports = {

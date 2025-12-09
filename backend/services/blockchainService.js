@@ -1,4 +1,4 @@
-const indy = require('indy-sdk');
+// const indy = require('indy-sdk'); // Not needed in simulation mode
 const { v4: uuidv4 } = require('uuid');
 const { initializePool, initializeWallet, getPoolHandle, getWalletHandle } = require('../config/indy');
 
@@ -57,7 +57,6 @@ const simulateIssueCredential = async (credDefId, attributes) => {
 };
 
 const simulateVerifyCredential = async (credential, credDefId) => {
-  // Simulate verification logic
   const isValid = credential && credential.credDefId === credDefId;
   console.log(`🔍 [SIMULATION] Verifying Credential: ${credential.credentialId} - Valid: ${isValid}`);
   return {
@@ -77,156 +76,38 @@ const simulateRevokeCredential = async (credentialId) => {
   };
 };
 
-// ============= REAL INDY FUNCTIONS =============
+// ============= REAL INDY FUNCTIONS (Not used in simulation) =============
 
 const realCreateDID = async () => {
-  try {
-    const walletHandle = getWalletHandle() || await initializeWallet();
-    const [did, verkey] = await indy.createAndStoreMyDid(walletHandle, {});
-    console.log(`✅ [REAL] Created DID: ${did}`);
-    return { did, verkey };
-  } catch (error) {
-    console.error('❌ Real DID creation error:', error);
-    throw error;
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 const realWriteNym = async (did, verkey, role = null) => {
-  try {
-    const poolHandle = getPoolHandle() || await initializePool();
-    const walletHandle = getWalletHandle() || await initializeWallet();
-    
-    // Build NYM request
-    const nymRequest = await indy.buildNymRequest(did, did, verkey, null, role);
-    
-    // Sign and submit
-    const nymResponse = await indy.signAndSubmitRequest(poolHandle, walletHandle, did, nymRequest);
-    
-    console.log(`✅ [REAL] NYM written to ledger: ${did}`);
-    return { success: true, response: nymResponse };
-  } catch (error) {
-    console.error('❌ Real NYM write error:', error);
-    throw error;
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 const realCreateSchema = async (issuerDid, schemaName, version, attributes) => {
-  try {
-    const walletHandle = getWalletHandle() || await initializeWallet();
-    
-    const [schemaId, schema] = await indy.issuerCreateSchema(
-      issuerDid,
-      schemaName,
-      version,
-      attributes
-    );
-    
-    console.log(`✅ [REAL] Created Schema: ${schemaId}`);
-    return { id: schemaId, schema };
-  } catch (error) {
-    console.error('❌ Real schema creation error:', error);
-    throw error;
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 const realCreateCredDef = async (issuerDid, schema) => {
-  try {
-    const walletHandle = getWalletHandle() || await initializeWallet();
-    
-    const [credDefId, credDef] = await indy.issuerCreateAndStoreCredentialDef(
-      walletHandle,
-      issuerDid,
-      schema,
-      'TAG1',
-      'CL',
-      { support_revocation: false }
-    );
-    
-    console.log(`✅ [REAL] Created Credential Definition: ${credDefId}`);
-    return { id: credDefId, credDef };
-  } catch (error) {
-    console.error('❌ Real credential definition creation error:', error);
-    throw error;
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 const realIssueCredential = async (credDefId, attributes) => {
-  try {
-    const walletHandle = getWalletHandle() || await initializeWallet();
-    
-    // In real implementation, this would involve:
-    // 1. Creating credential offer
-    // 2. Receiving credential request from holder
-    // 3. Issuing credential
-    
-    // Simplified version for demonstration
-    const credentialId = `cred_${uuidv4()}`;
-    console.log(`✅ [REAL] Issued Credential: ${credentialId}`);
-    
-    return {
-      credentialId,
-      credDefId,
-      attributes,
-      issuedAt: new Date().toISOString()
-    };
-  } catch (error) {
-    console.error('❌ Real credential issuance error:', error);
-    throw error;
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 const realVerifyCredential = async (credential, credDefId) => {
-  try {
-    const poolHandle = getPoolHandle() || await initializePool();
-    
-    // In real implementation, this would:
-    // 1. Get credential definition from ledger
-    // 2. Verify credential signature
-    // 3. Check revocation status
-    
-    console.log(`✅ [REAL] Verified Credential: ${credential.credentialId}`);
-    
-    return {
-      verified: true,
-      credDefId,
-      timestamp: new Date().toISOString()
-    };
-  } catch (error) {
-    console.error('❌ Real credential verification error:', error);
-    return {
-      verified: false,
-      error: error.message
-    };
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 const realRevokeCredential = async (credentialId) => {
-  try {
-    const walletHandle = getWalletHandle() || await initializeWallet();
-    
-    // In real implementation, this would:
-    // 1. Update revocation registry
-    // 2. Post update to ledger
-    
-    console.log(`✅ [REAL] Revoked Credential: ${credentialId}`);
-    
-    return {
-      revoked: true,
-      credentialId,
-      revokedAt: new Date().toISOString()
-    };
-  } catch (error) {
-    console.error('❌ Real credential revocation error:', error);
-    throw error;
-  }
+  throw new Error('Real Indy SDK not available. Running in simulation mode.');
 };
 
 // ============= EXPORTED FUNCTIONS (with mode selection) =============
 
-/**
- * Create a new DID
- * @returns {Object} - { did, verkey }
- */
 const createDID = async () => {
   if (SIMULATION_MODE) {
     return simulateCreateDID();
@@ -235,13 +116,6 @@ const createDID = async () => {
   }
 };
 
-/**
- * Write NYM (DID) to ledger
- * @param {String} did - The DID
- * @param {String} verkey - Verification key
- * @param {String} role - Role (optional)
- * @returns {Object} - Transaction result
- */
 const writeNymToLedger = async (did, verkey, role = null) => {
   if (SIMULATION_MODE) {
     return simulateWriteNym(did, verkey, role);
@@ -250,14 +124,6 @@ const writeNymToLedger = async (did, verkey, role = null) => {
   }
 };
 
-/**
- * Create a credential schema
- * @param {String} issuerDid - Issuer's DID
- * @param {String} schemaName - Schema name
- * @param {String} version - Schema version
- * @param {Array} attributes - Array of attribute names
- * @returns {Object} - Schema object
- */
 const createSchema = async (issuerDid, schemaName, version, attributes) => {
   if (SIMULATION_MODE) {
     return simulateCreateSchema(issuerDid, schemaName, version, attributes);
@@ -266,12 +132,6 @@ const createSchema = async (issuerDid, schemaName, version, attributes) => {
   }
 };
 
-/**
- * Create a credential definition
- * @param {String} issuerDid - Issuer's DID
- * @param {Object} schema - Schema object
- * @returns {Object} - Credential definition object
- */
 const createCredentialDefinition = async (issuerDid, schema) => {
   if (SIMULATION_MODE) {
     return simulateCreateCredDef(issuerDid, schema.id);
@@ -280,12 +140,6 @@ const createCredentialDefinition = async (issuerDid, schema) => {
   }
 };
 
-/**
- * Issue a credential
- * @param {String} credDefId - Credential definition ID
- * @param {Object} attributes - Credential attributes
- * @returns {Object} - Issued credential
- */
 const issueCredential = async (credDefId, attributes) => {
   if (SIMULATION_MODE) {
     return simulateIssueCredential(credDefId, attributes);
@@ -294,12 +148,6 @@ const issueCredential = async (credDefId, attributes) => {
   }
 };
 
-/**
- * Verify a credential
- * @param {Object} credential - The credential to verify
- * @param {String} credDefId - Credential definition ID
- * @returns {Object} - Verification result
- */
 const verifyCredential = async (credential, credDefId) => {
   if (SIMULATION_MODE) {
     return simulateVerifyCredential(credential, credDefId);
@@ -308,11 +156,6 @@ const verifyCredential = async (credential, credDefId) => {
   }
 };
 
-/**
- * Revoke a credential
- * @param {String} credentialId - Credential ID to revoke
- * @returns {Object} - Revocation result
- */
 const revokeCredential = async (credentialId) => {
   if (SIMULATION_MODE) {
     return simulateRevokeCredential(credentialId);
@@ -321,12 +164,6 @@ const revokeCredential = async (credentialId) => {
   }
 };
 
-/**
- * Anchor credential hash to blockchain
- * @param {String} credentialHash - Hash of credential
- * @param {String} issuerDid - Issuer's DID
- * @returns {Object} - Anchoring result
- */
 const anchorCredentialHash = async (credentialHash, issuerDid) => {
   console.log(`⚓ Anchoring hash to blockchain: ${credentialHash}`);
   
@@ -344,18 +181,10 @@ const anchorCredentialHash = async (credentialHash, issuerDid) => {
   };
 };
 
-/**
- * Get current mode (simulation or real)
- * @returns {String} - Current mode
- */
 const getMode = () => {
   return SIMULATION_MODE ? 'SIMULATION' : 'REAL';
 };
 
-/**
- * Toggle simulation mode
- * @param {Boolean} enable - Enable/disable simulation mode
- */
 const setSimulationMode = (enable) => {
   SIMULATION_MODE = enable;
   console.log(`🔄 Blockchain mode set to: ${SIMULATION_MODE ? 'SIMULATION' : 'REAL'}`);

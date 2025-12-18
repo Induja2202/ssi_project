@@ -15,21 +15,31 @@ connectDB();
 
 // Middleware
 // CORS configuration for production
+// CORS configuration - REPLACE THE EXISTING CORS SETUP
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://localhost:3000',
-  process.env.FRONTEND_URL || 'http://localhost:3000'
+  'https://ssi-identity-platform.vercel.app',
+  'https://ssi-identity-platform-*.vercel.app'  // Allow all Vercel preview URLs
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
+    // Allow requests with no origin (mobile apps, Postman)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+    // Check if origin is allowed
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (allowedOrigin.includes('*')) {
+        const pattern = new RegExp('^' + allowedOrigin.replace('*', '.*') + '$');
+        return pattern.test(origin);
+      }
+      return allowedOrigin === origin;
+    });
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(null, true); // Allow all for now, restrict later
+      callback(null, true); // Allow all for now (restrict in production)
     }
   },
   credentials: true

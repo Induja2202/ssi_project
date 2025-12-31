@@ -3,6 +3,9 @@ const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/auth');
+const didRoutes = require('./routes/did');
+const directoryRoutes = require('./routes/directory');
 
 // Load environment variables
 dotenv.config();
@@ -55,6 +58,10 @@ app.use('/api/credential', require('./routes/credential'));
 app.use('/api/issuer', require('./routes/issuer'));
 app.use('/api/holder', require('./routes/holder'));
 app.use('/api/verifier', require('./routes/verifier'));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/did', didRoutes);
+app.use('/api/directory', directoryRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

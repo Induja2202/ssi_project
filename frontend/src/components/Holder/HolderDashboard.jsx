@@ -8,6 +8,8 @@ import MyCredentials from './MyCredentials';
 import ShareCredential from './ShareCredential';
 import { holderAPI, authAPI } from '../../services/api';
 import '../../styles/Dashboard.css';
+import DIDDisplay from '../Common/DIDDisplay';
+
 
 const HolderDashboard = ({ user: initialUser, onLogout }) => {
   const [user, setUser] = useState(initialUser);
@@ -47,6 +49,8 @@ const HolderDashboard = ({ user: initialUser, onLogout }) => {
   const refreshStats = () => {
     fetchDashboard();
   };
+
+  
 
   return (
     <div className="dashboard-container">
@@ -95,6 +99,15 @@ const HolderDashboard = ({ user: initialUser, onLogout }) => {
                     <h1>Holder Dashboard</h1>
                     <p>Manage your verifiable credentials</p>
                   </div>
+
+                  
+{user && (
+  <DIDDisplay 
+    did={user.did}
+    userName={user.name}
+    role={user.role}
+  />
+)}
 
                   {!user.did ? (
                     <CreateDID user={user} onDIDCreated={handleDIDCreated} />

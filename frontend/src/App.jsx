@@ -6,6 +6,7 @@ import IssuerDashboard from './components/Issuer/IssuerDashboard';
 import HolderDashboard from './components/Holder/HolderDashboard';
 import VerifierDashboard from './components/Verifier/VerifierDashboard';
 import ProtectedRoute from './components/Common/ProtectedRoute';
+import IssuerDirectory from './components/Holder/IssuerDirectory';
 import { authAPI } from './services/api';
 import './styles/App.css';
 
@@ -99,6 +100,21 @@ function App() {
           />
         </Routes>
       </div>
+      <Routes>
+  {/* All your existing routes stay unchanged */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
+  
+  {/* ✅ ADD THIS NEW ROUTE */}
+  <Route 
+    path="/issuer-directory" 
+    element={
+      <ProtectedRoute>
+        <IssuerDirectory />
+      </ProtectedRoute>
+    } 
+  />
+</Routes>
     </Router>
   );
 }

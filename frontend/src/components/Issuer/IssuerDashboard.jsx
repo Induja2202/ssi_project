@@ -7,6 +7,9 @@ import CredentialRequests from './CredentialRequests';
 import IssueCredential from './IssueCredential';
 import { issuerAPI, authAPI } from '../../services/api';
 import '../../styles/Dashboard.css';
+import DIDDisplay from '../Common/DIDDisplay';
+
+
 
 const IssuerDashboard = ({ user: initialUser, onLogout }) => {
   const [user, setUser] = useState(initialUser);
@@ -95,6 +98,13 @@ const IssuerDashboard = ({ user: initialUser, onLogout }) => {
                     <h1>Issuer Dashboard</h1>
                     <p>Issue and manage verifiable credentials</p>
                   </div>
+                  {user && (
+  <DIDDisplay 
+    did={user.did}
+    userName={user.name}
+    role={user.role}
+  />
+)}
 
                   {!user.did ? (
                     <CreateDID user={user} onDIDCreated={handleDIDCreated} />

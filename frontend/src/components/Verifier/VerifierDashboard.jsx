@@ -7,6 +7,8 @@ import VerifyCredential from './VerifyCredential';
 import VerificationHistory from './VerificationHistory';
 import { verifierAPI, authAPI } from '../../services/api';
 import '../../styles/Dashboard.css';
+import DIDDisplay from '../Common/DIDDisplay';
+
 
 const VerifierDashboard = ({ user: initialUser, onLogout }) => {
   const [user, setUser] = useState(initialUser);
@@ -93,6 +95,14 @@ const VerifierDashboard = ({ user: initialUser, onLogout }) => {
                     <h1>Verifier Dashboard</h1>
                     <p>Verify credentials and check authenticity</p>
                   </div>
+                  
+{user && (
+  <DIDDisplay 
+    did={user.did}
+    userName={user.name}
+    role={user.role}
+  />
+)}
 
                   {!user.did ? (
                     <CreateDID user={user} onDIDCreated={handleDIDCreated} />

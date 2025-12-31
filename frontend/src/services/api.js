@@ -1,6 +1,9 @@
 import axios from 'axios';
 import config from '../config';
 
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const API = axios.create({
   baseURL: config.apiUrl,
   headers: {
@@ -81,3 +84,37 @@ export const verifierAPI = {
 };
 
 export default API;
+
+// ✅ ADD THESE NEW FUNCTIONS AT THE END:
+
+export const getIssuers = async (params) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/directory/issuers`, { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching issuers:', error);
+    throw error;
+  }
+};
+
+// Get issuer by DID
+export const getIssuerByDID = async (did) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/directory/issuers/${did}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching issuer:', error);
+    throw error;
+  }
+};
+
+// Get all categories
+export const getCategories = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/directory/categories`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};

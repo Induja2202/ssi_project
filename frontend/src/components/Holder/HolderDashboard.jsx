@@ -68,6 +68,10 @@ const HolderDashboard = ({ user: initialUser, onLogout }) => {
             >
               📊 Dashboard
             </Link>
+
+             <Link to="/issuer-directory" className="menu-item">
+             🔍 Find Issuers
+           </Link>
             <Link
               to="/holder/request"
               className={location.pathname === '/holder/request' ? 'active' : ''}

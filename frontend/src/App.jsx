@@ -101,9 +101,7 @@ function App() {
         </Routes>
       </div>
       <Routes>
-  {/* All your existing routes stay unchanged */}
-  <Route path="/login" element={<Login />} />
-  <Route path="/register" element={<Register />} />
+  
   
   {/* ✅ ADD THIS NEW ROUTE */}
   <Route 

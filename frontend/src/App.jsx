@@ -105,13 +105,9 @@ function App() {
   
   {/* ✅ ADD THIS NEW ROUTE */}
   <Route 
-    path="/issuer-directory" 
-    element={
-      <ProtectedRoute>
-        <IssuerDirectory />
-      </ProtectedRoute>
-    } 
-  />
+  path="/issuer-directory" 
+  element={<IssuerDirectory />} 
+/>
 </Routes>
     </Router>
   );
